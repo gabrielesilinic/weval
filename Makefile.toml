@@ -1,0 +1,8 @@
+[tasks.web]
+description = "Build for web"
+command = "wasm-pack"
+args = ["build", "--target", "web", "--out-dir", "pkg-web"]
+[tasks.node]
+description = "Build for node"
+command = "wasm-pack"
+args = ["build", "--target", "nodejs", "--out-dir", "pkg-node"]

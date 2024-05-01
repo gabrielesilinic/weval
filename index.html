@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <title>weval: the wasm evaluator</title>
+    <style>
+        body, html{
+            height: 100vh;
+        }
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="container-fluid">
+        <form>
+                <input type="text" id="input" placeholder="insert a mathematical expression" />
+                <h6 id="output">-</h6>
+                <input type="button" id="evalbtn" value="Evaluate"></input>
+        </form>
+    </main>
+    <script type="module">
+        import init, { eval_float64 } from './pkg-web/weval.js';
+        await init();
+        // add event listener to button
+        document.getElementById('evalbtn').addEventListener('click', () => {
+            // get input value
+            const input = document.getElementById('input').value;
+            // evaluate input
+            const output = eval_float64(input);
+            // display output
+            document.getElementById('output').innerText = output;
+        });
+    </script>
+</body>
+</html>
