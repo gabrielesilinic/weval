@@ -28,7 +28,7 @@
         </form>
     </main>
     <script type="module">
-        import init, { eval_float64 } from './pkg-web/weval.js';
+        import init, { eval_float64, tokenizer, infix_to_postfix_tokens } from './pkg-web/weval.js';
         await init();
         // add event listener to button
         document.getElementById('evalbtn').addEventListener('click', () => {
@@ -38,6 +38,14 @@
             const output = eval_float64(input);
             // display output
             document.getElementById('output').innerText = output;
+
+            let tokens = tokenizer(input);
+                    
+            //execute the shunting yard algorithm on the tokens
+            let postfixTokens = infix_to_postfix_tokens(tokens)
+                    
+            console.log('look mum, i made a postfix expression: ')
+            console.log(postfixTokens.join(' '))
         });
     </script>
 </body>
