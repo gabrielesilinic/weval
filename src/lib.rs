@@ -11,7 +11,7 @@ enum TokenState {
 
 fn is_operator(op: &str) -> bool {
     match op {
-        "+" | "-" | "*" | "/" | "**" => true,
+        "+" | "-" | "*" | "/" | "**" | "-u" => true,
         _ => false,
     }
 }
@@ -21,6 +21,7 @@ fn get_operator_precedence(op: &str) -> i32 {
         "+" | "-" => 1,
         "*" | "/" => 2,
         "**" => 3,
+        "-u" => 4, //unary minus
         _ => 0,
     }
 }
@@ -57,6 +58,22 @@ pub fn tokenizer(expr: String) -> Vec<String> {
             //match a parenthesis
             '(' | ')' => {
                 current_state = TokenState::Parenthesis;
+
+                if c == '(' && past_state == TokenState::Operator{
+                    if tokens.len() > 0 && tokens.last().unwrap() == "-"{
+                        if tokens.len() <= 1 {
+                            //is unary minus
+                            tokens.pop();
+                            tokens.push("-u".to_string());
+                        }
+                        else if tokens.len() > 1 && is_operator(&tokens[tokens.len() - 2]){
+                            //is unary minus
+                            tokens.pop();
+                            tokens.push("-u".to_string());
+                        }
+                    }
+                }
+
                 tokens.push(c.to_string());
             }
             //match a number
@@ -126,7 +143,7 @@ pub fn infix_to_postfix_tokens(tokens: Vec<String>) -> Vec<String> {
                 }
                 operators.pop();
             }
-            "+" | "-" | "*" | "/" | "**" => {
+            "+" | "-" | "*" | "/" | "**" | "-u" => {
                 //if the current token to operators only if it has a greater precedence compared to the last operator in the stack
                 while operators.len() > 0
                     && get_operator_precedence(&token)
@@ -179,6 +196,10 @@ pub fn eval_float64(expr: String) -> f64 {
                 let a = stack.pop().unwrap();
                 let b = stack.pop().unwrap();
                 stack.push(b.powf(a));
+            }
+            "-u" => {
+                let a = stack.pop().unwrap();
+                stack.push(-a);
             }
             _ => {
                 stack.push(token.parse::<f64>().unwrap());

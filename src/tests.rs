@@ -330,3 +330,63 @@ fn eval_float64_str_floatok() {
     let result = eval_float64_str(expr.to_string());
     assert_eq!(result, expected);
 }
+
+#[test]
+fn unary_minus_tokenizer() {
+    let expr = "- 1 + 2 * - (2 * 2)";
+    let tokens: Vec<String> = tokenizer(expr.to_string());
+    assert_eq!(
+        tokens,
+        vec!["-1", "+", "2", "*", "-u", "(", "2", "*", "2", ")"]
+    );
+}
+
+#[test]
+fn unary_minus_at_start() {
+    let expr = "- (1 + 2) * 3";
+    let tokens = tokenizer(expr.to_string());
+    assert_eq!(
+        tokens,
+        vec!["-u", "(", "1", "+", "2", ")", "*", "3"]
+    );
+}
+
+
+#[test]
+fn infix_to_postfix_tokens_unary_minus_at_start() {
+    let tokens: Vec<String> = vec!["-u", "(", "1", "+", "2", ")", "*", "3"]
+        .iter()
+        .map(|&s| s.to_string())
+        .collect();
+    let postfix_tokens = infix_to_postfix_tokens(tokens.clone());
+    assert_eq!(postfix_tokens, vec!["1", "2", "+", "-u", "3", "*"]);
+}
+
+#[test]
+fn infix_to_postfix_tokens_complex_unary_minus() {
+    let tokens: Vec<String> = vec![
+        "3", "+", "4", "-", "-u", "(", "2", "*", "2", ")", "+", "-u", "(", "2", "+", "1", ")"
+    ].iter().map(|&s| s.to_string()).collect();
+    
+    let postfix_tokens = infix_to_postfix_tokens(tokens.clone());
+    assert_eq!(
+        postfix_tokens, 
+        vec!["3", "4", "+", "2", "2", "*", "-u", "-", "2", "1", "+", "-u", "+"]
+    );
+}
+
+#[test]
+fn eval_float64_unary_minus_complex1() {
+    let expr = "3 + 4 - -(2 * 2) + - (2 + 1)";
+    let expected = 3.0 + 4.0 - -(2.0 * 2.0) + - (2.0 + 1.0);
+    let result = eval_float64(expr.to_string());
+    assert_eq!(result, expected);
+}
+
+#[test]
+fn eval_float64_unary_minus_complex2() {
+    let expr = "- (1 + 2) * 3";
+    let expected = -(1.0 + 2.0) * 3.0;
+    let result = eval_float64(expr.to_string());
+    assert_eq!(result, expected);
+}

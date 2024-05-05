@@ -3,10 +3,10 @@ weval was made with the intent of having a portable and reliable eval function, 
 
 as of now the library does not support unary operators and is not customizable.
 
-as of version 0.1.0 the library can be considered usable in the sense that it won't crash in your face as long as you input a valid expression, but a syntax checker and unary operators support has to yet be introduced, 
-this includes the lack of support for the minus sign in front of parentheses, that will make the eval crash, do not expect API stability yet though.
+as of version 0.1.1 the library can be considered usable in the sense that it won't crash in your face as long as you input a valid expression, but a syntax checker and unary operators support has to yet be introduced, 
+do not expect API stability yet though.
 
-Later, if I find the time I also plan to implement support for higher precision decimals such as Decimal128 and maybe supoort for arbitrary operators (as functions).
+Later, if I find the time I also plan to implement support for higher precision decimals such as Decimal128 and maybe support for arbitrary operators (as functions).
 
 # Build
 
